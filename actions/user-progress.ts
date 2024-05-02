@@ -1,6 +1,6 @@
 "use server"; // it's a server action 
 
-//import { and, eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { redirect } from "next/navigation";
 import { revalidatePath } from "next/cache";
 import { auth, currentUser } from "@clerk/nextjs";
@@ -8,7 +8,7 @@ import { auth, currentUser } from "@clerk/nextjs";
 import db from "@/db/drizzle";
 //import { POINTS_TO_REFILL } from "@/constants";
 import { getCourseById, getUserProgress } from "@/db/queries";
-import {  userProgress } from "@/db/schema";
+import {  userProgress, challengeProgress, challenges } from "@/db/schema";
 
 // upsert () : if we already  have the course in our database then update . 
 //If we started the course Spanish then I passed to French and I want to go back to it We'll use upsert() method 
@@ -64,7 +64,9 @@ export const upsertUserProgress = async (courseId: number) => {
   redirect("/learn");
 };
 
-/*
+
+
+
 export const reduceHearts = async (challengeId: number) => {
   const { userId } = await auth();
 
@@ -73,17 +75,15 @@ export const reduceHearts = async (challengeId: number) => {
   }
 
   const currentUserProgress = await getUserProgress();
-  const userSubscription = await getUserSubscription();
 
   const challenge = await db.query.challenges.findFirst({
     where: eq(challenges.id, challengeId),
   });
 
-  if (!challenge) {
-    throw new Error("Challenge not found");
-  }
+  if (!challenge) throw new Error("Challenge not found.");
 
   const lessonId = challenge.lessonId;
+
 
   const existingChallengeProgress = await db.query.challengeProgress.findFirst({
     where: and(
@@ -95,15 +95,11 @@ export const reduceHearts = async (challengeId: number) => {
   const isPractice = !!existingChallengeProgress;
 
   if (isPractice) {
-    return { error: "practice" }; 
+    return { error: "practice" };  //normal API response
   }
 
   if (!currentUserProgress) {
-    throw new Error("User progress not found");
-  }
-
-  if (userSubscription?.isActive) {
-    return { error: "subscription" };
+    throw new Error("User progress not found"); //critical = stopping app
   }
 
   if (currentUserProgress.hearts === 0) {
@@ -119,6 +115,19 @@ export const reduceHearts = async (challengeId: number) => {
   revalidatePath("/quests");
   revalidatePath("/leaderboard");
   revalidatePath(`/lesson/${lessonId}`);
+
+};
+  /*
+
+
+
+
+  if (userSubscription?.isActive) {
+    return { error: "subscription" };
+  }
+
+
+
 };
 
 export const refillHearts = async () => {

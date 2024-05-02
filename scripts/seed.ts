@@ -123,6 +123,22 @@ const main = async () => {
             question: 'Which one of these is "the man"?',
             
           },
+           {
+            id: 2,
+            lessonId: 1,
+            type: "ASSIST",
+            order: 2,
+            question: ' "the man" ',
+
+           },
+           {
+            id: 3,
+            lessonId: 1,
+            type: "SELECT",
+            order: 3,
+            question: ' Which one of these is "the Robot" ?',
+
+           }
         ]);
 
         await db.insert(schema.challengeOptions).values([
@@ -150,6 +166,35 @@ const main = async () => {
             imageSrc: "/robot.svg",
             audioSrc: "/es_robot.mp3",
           },        
+        ]);
+
+        await db
+        .insert(schema.challenges)
+        .values([
+          {
+            id: 4,
+            lessonId: 2, //verbs
+            type: "SELECT",
+            order: 1,
+            question: 'Which one of these is "the man"?',
+            
+          },
+           {
+            id: 5,
+            lessonId: 2, //verbs
+            type: "ASSIST",
+            order: 2,
+            question: ' "the man" ',
+
+           },
+           {
+            id: 6,
+            lessonId: 2, //verbs
+            type: "SELECT", 
+            order: 3,
+            question: ' Which one of these is "the Robot" ?',
+
+           }
         ]);
 
 
